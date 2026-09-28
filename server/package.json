@@ -1,0 +1,29 @@
+{
+  "name": "agrisaarthi-server",
+  "version": "1.0.0",
+  "description": "AgriSaarthi backend – Express + Firestore. Ingests ESP32 station readings, serves the dashboard, relays pump commands, stores diagnosis photos and mandi prices.",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "seed": "tsx src/seed.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^14.5.0",
+    "multer": "^2.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^22.7.4",
+    "tsx": "^4.19.1",
+    "typescript": "~5.6.2"
+  }
+}
