@@ -99,11 +99,11 @@ interface FarmProfile {
   sync: number
 }
 
-const PROFILES: Record<string, FarmProfile> = {
+export const PROFILES: Record<string, FarmProfile> = {
   'farm-main': { moistureNow: 22, moistureStart: 31, ph: 7.8, ec: 0.62, battery: 86, sync: 12 },
   'farm-river': { moistureNow: 34, moistureStart: 38, ph: 7.2, ec: 0.41, battery: 64, sync: 4 },
 }
-const profile = (farmId: string) => PROFILES[farmId] ?? PROFILES['farm-main']
+export const profile = (farmId: string) => PROFILES[farmId] ?? PROFILES['farm-main']
 
 export function mockStationHealth(farmId: string): StationHealth {
   const p = profile(farmId)
@@ -115,7 +115,7 @@ export function mockStationHealth(farmId: string): StationHealth {
 /** hour-of-day curve peaking at 15:00 (−1…1) */
 const diurnal = (date: Date) => Math.sin(((date.getHours() + date.getMinutes() / 60 - 9) / 24) * Math.PI * 2)
 
-function makeSeries(farmId: string, points: number, stepMin: number): SeriesPoint[] {
+export function makeSeries(farmId: string, points: number, stepMin: number): SeriesPoint[] {
   const p = profile(farmId)
   const rand = rng(seedOf(farmId) + stepMin)
   return Array.from({ length: points }, (_, i) => {
@@ -139,7 +139,7 @@ function makeSeries(farmId: string, points: number, stepMin: number): SeriesPoin
 
 /* ---------- overview ---------- */
 
-const statusFor = {
+export const statusFor = {
   moisture: (v: number): Status => (v < 25 ? 'crit' : v < 30 ? 'warn' : 'ok'),
   temperature: (v: number): Status => (v > 38 ? 'crit' : v > 34 ? 'warn' : 'ok'),
   humidity: (v: number): Status => (v > 85 ? 'warn' : 'ok'),

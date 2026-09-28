@@ -1,5 +1,20 @@
-import { BatteryCharging, BatteryLow, BatteryMedium, Bell, Loader2, RefreshCw, Square, Volume2 } from 'lucide-react'
-import { useState } from 'react'
+import {
+  BatteryCharging,
+  BatteryLow,
+  BatteryMedium,
+  Bell,
+  Bug,
+  ChevronDown,
+  CloudRain,
+  Droplets,
+  Loader2,
+  RefreshCw,
+  Siren,
+  Square,
+  Volume2,
+  Zap,
+} from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -14,11 +29,181 @@ import { useFormatters } from '@/hooks/useFormatters'
 import { useSpeech } from '@/hooks/useSpeech'
 import { useGlossary } from '@/hooks/useGlossary'
 import { api } from '@/lib/api'
+import { simulator } from '@/lib/simulator'
 import { translateParams } from '@/lib/glossary'
 import { getVoiceLang } from '@/lib/voice'
 import { cn } from '@/lib/utils'
 import { ListenButton } from './ListenButton'
 import { StatusDot } from './states'
+
+function SimulationBadge({ className }: { className?: string }) {
+  const { t } = useTranslation()
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-full border border-brand/25 bg-brand-soft/70 px-2.5 py-1 text-2xs font-semibold text-brand',
+        className,
+      )}
+      title="Live 5s station simulator active"
+    >
+      <span className="size-1.5 animate-pulse rounded-full bg-brand" />
+      {t('dash.top.simMode')}
+    </span>
+  )
+}
+
+function SimulateEventDropdown() {
+  const { t } = useTranslation()
+  const { farmId } = useDashboard()
+  const [open, setOpen] = useState(false)
+
+  const events: {
+    id: 'soilDry' | 'animal' | 'pest' | 'batteryLow' | 'rainForecast'
+    titleKey: string
+    descKey: string
+    icon: typeof Droplets
+    iconColor: string
+    iconBg: string
+  }[] = [
+    {
+      id: 'rainForecast',
+      titleKey: 'dash.top.eventRainForecast',
+      descKey: 'dash.top.descRainForecast',
+      icon: CloudRain,
+      iconColor: 'text-sky-600',
+      iconBg: 'bg-sky-100',
+    },
+    {
+      id: 'soilDry',
+      titleKey: 'dash.top.eventSoilDry',
+      descKey: 'dash.top.descSoilDry',
+      icon: Droplets,
+      iconColor: 'text-warn',
+      iconBg: 'bg-warn-soft',
+    },
+    {
+      id: 'animal',
+      titleKey: 'dash.top.eventAnimal',
+      descKey: 'dash.top.descAnimal',
+      icon: Siren,
+      iconColor: 'text-crit',
+      iconBg: 'bg-crit-soft',
+    },
+    {
+      id: 'pest',
+      titleKey: 'dash.top.eventPest',
+      descKey: 'dash.top.descPest',
+      icon: Bug,
+      iconColor: 'text-amber-600',
+      iconBg: 'bg-amber-100',
+    },
+    {
+      id: 'batteryLow',
+      titleKey: 'dash.top.eventBatteryLow',
+      descKey: 'dash.top.descBatteryLow',
+      icon: BatteryLow,
+      iconColor: 'text-crit',
+      iconBg: 'bg-crit-soft',
+    },
+  ]
+
+  const handleSelect = (type: 'soilDry' | 'animal' | 'pest' | 'batteryLow' | 'rainForecast') => {
+    setOpen(false)
+    simulator.triggerEvent(type, farmId)
+
+    if (type === 'rainForecast') {
+      toast.info(t('dash.top.eventRainForecast'), {
+        icon: <CloudRain className="size-4 text-sky-600" />,
+        description: t('dash.top.toastRainForecast'),
+      })
+    } else if (type === 'soilDry') {
+      toast.error(t('dash.top.eventSoilDry'), {
+        icon: <Droplets className="size-4 text-crit" />,
+        description: t('dash.top.toastSoilDry', { value: 18.2 }),
+      })
+    } else if (type === 'animal') {
+      toast.error(t('dash.top.eventAnimal'), {
+        icon: <Siren className="size-5 animate-bounce text-crit" />,
+        description: (
+          <div className="mt-1 flex items-start gap-2.5">
+            <div className="relative aspect-[4/3] w-16 shrink-0 overflow-hidden rounded-lg bg-[#07140a]">
+              <img
+                src="https://images.unsplash.com/photo-1484406566174-9da000fda645?auto=format&fit=crop&w=480&q=60"
+                alt="IR Nilgai"
+                className="size-full object-cover opacity-85 contrast-125 grayscale"
+              />
+              <div className="absolute inset-0 bg-[#35ff6b]/20 mix-blend-color" />
+              <span className="absolute bottom-0.5 left-1 font-mono text-[8px] text-lime">IR 02:14</span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs leading-snug text-ink/80">{t('dash.top.toastAnimal')}</p>
+              <Link
+                to="/dashboard/wildlife"
+                className="mt-1 inline-flex items-center gap-1 text-2xs font-bold text-brand hover:underline"
+              >
+                {t('dash.wild.title')} →
+              </Link>
+            </div>
+          </div>
+        ),
+        duration: 6000,
+      })
+    } else if (type === 'pest') {
+      toast.warning(t('dash.top.eventPest'), {
+        icon: <Bug className="size-4 text-warn" />,
+        description: t('dash.top.toastPest', { pest: 'Pink bollworm' }),
+      })
+    } else if (type === 'batteryLow') {
+      toast.error(t('dash.top.eventBatteryLow'), {
+        icon: <BatteryLow className="size-4 text-crit" />,
+        description: t('dash.top.toastBatteryLow', { value: 14 }),
+      })
+    }
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          shape="pill"
+          className="h-8 gap-1.5 border-brand/30 bg-brand-soft/40 px-3 text-xs font-semibold text-brand hover:bg-brand-soft hover:text-brand-dark"
+        >
+          <Zap className="size-3.5 fill-current" />
+          <span className="hidden sm:inline">{t('dash.top.simulateEvent')}</span>
+          <ChevronDown className="size-3 opacity-60" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-64 p-1.5">
+        <div className="px-2.5 py-1.5 text-2xs font-bold uppercase tracking-wider text-ink/50">
+          {t('dash.top.simulateEvent')}
+        </div>
+        <div className="space-y-1">
+          {events.map((ev) => {
+            const Icon = ev.icon
+            return (
+              <button
+                key={ev.id}
+                type="button"
+                onClick={() => handleSelect(ev.id)}
+                className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-surface-muted"
+              >
+                <span className={cn('grid size-7 shrink-0 place-items-center rounded-lg', ev.iconBg, ev.iconColor)}>
+                  <Icon className="size-3.5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-body-sm font-semibold leading-tight text-ink">{t(ev.titleKey)}</p>
+                  <p className="text-caption text-ink/60">{t(ev.descKey)}</p>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
 
 function BatteryChip() {
   const { t } = useTranslation()
@@ -67,7 +252,14 @@ function Notifications() {
   const { farmId } = useDashboard()
   const fmt = useFormatters()
   const [open, setOpen] = useState(false)
-  const { data } = useApi(() => api.getNotifications(farmId), [farmId])
+  const { data, mutate } = useApi(() => api.getNotifications(farmId), [farmId])
+
+  useEffect(() => {
+    return simulator.subscribe(() => {
+      mutate(() => simulator.getNotifications(farmId))
+    })
+  }, [farmId, mutate])
+
   const unread = data?.filter((a) => a.severity !== 'ok').length ?? 0
 
   return (
@@ -176,11 +368,13 @@ export function Topbar() {
     <header className="sticky top-0 z-20 border-b border-surface-line bg-surface/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
         <FarmSelect />
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-2">
           <BatteryChip />
+          <SimulationBadge />
         </div>
 
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+          <SimulateEventDropdown />
           <LanguageSwitcher className="hidden border-surface-line bg-white sm:inline-flex" />
           <PlayVoice />
           <Notifications />
@@ -197,9 +391,12 @@ export function Topbar() {
         </div>
       </div>
 
-      {/* compact row for small screens: battery + language */}
+      {/* compact row for small screens: battery + simulation mode + language */}
       <div className="flex items-center justify-between gap-2 px-4 pb-2.5 sm:px-6 md:hidden">
-        <BatteryChip />
+        <div className="flex items-center gap-2">
+          <BatteryChip />
+          <SimulationBadge />
+        </div>
         <LanguageSwitcher className="border-surface-line bg-white sm:hidden" />
       </div>
     </header>

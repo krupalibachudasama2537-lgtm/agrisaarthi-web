@@ -16,7 +16,6 @@
  * (VITE_API_URL unset) still fully works by falling back to local mock data.
  */
 import {
-  MOCK_ALERTS,
   MOCK_ALERT_ROUTING,
   MOCK_DISEASES,
   MOCK_FARMER,
@@ -25,13 +24,10 @@ import {
   MOCK_MESH,
   MOCK_MESSAGE_LOG,
   MOCK_PESTS,
-  MOCK_WILDLIFE,
   mockIrrigation,
   mockMarket,
   mockOverview,
   mockPestWatch,
-  mockSoil,
-  mockStationHealth,
 } from '@/data/dashboard'
 import { MOCK_HERO, MOCK_STATION } from '@/data/station'
 import type {
@@ -59,6 +55,10 @@ import type {
   StationSnapshot,
   WildlifeEvent,
 } from '@/data/types'
+
+import { calculateFertilizerPlan } from '@/data/fertilizerRules'
+import { simulator } from '@/lib/simulator'
+import { fetchLiveWeather } from '@/lib/weather'
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL as string | undefined
 
@@ -151,7 +151,7 @@ const store = {
   log: structuredClone(MOCK_MESSAGE_LOG) as MessageLog[],
 }
 
-const pumpFor = (farmId: string): PumpState => store.pump.get(farmId) ?? { on: false, autoMode: true, since: null, trigger: null }
+const pumpFor = (farmId: string): PumpState => simulator.getPumpState(farmId) ?? store.pump.get(farmId) ?? { on: false, autoMode: true, since: null, trigger: null }
 
 /** Pick a stable mock result from a file (same photo → same answer) */
 const pickByFile = <T,>(file: File, list: T[]) => list[[...file.name].reduce((a, c) => a + c.charCodeAt(0), file.size) % list.length]
@@ -191,13 +191,13 @@ export const api = {
   },
 
   async getStationHealth(farmId: string): Promise<StationHealth> {
-    if (shouldMock()) return delay(mockStationHealth(farmId), 150)
+    if (shouldMock()) return delay(simulator.getStationHealth(farmId), 150)
     return http(`/farms/${farmId}/station-health`)
   },
 
   /** Bell menu – latest unread alerts */
   async getNotifications(farmId: string): Promise<AlertItem[]> {
-    if (shouldMock()) return delay(MOCK_ALERTS.slice(0, 4), 200)
+    if (shouldMock()) return delay(simulator.getNotifications(farmId), 200)
     return http(`/farms/${farmId}/notifications`)
   },
 
@@ -205,7 +205,8 @@ export const api = {
 
   async getOverview(farmId: string): Promise<OverviewData> {
     if (shouldMock()) {
-      return mock({ ...mockOverview(farmId), pump: pumpFor(farmId) }, (v) => ({ ...v, recommendations: [], alerts: [], series24h: [] }))
+      const weather = await fetchLiveWeather(farmId).catch(() => undefined)
+      return mock({ ...simulator.getOverview(farmId, weather), pump: pumpFor(farmId) }, (v) => ({ ...v, recommendations: [], alerts: [], series24h: [] }))
     }
     const [core, { recommendations, weather }] = await Promise.all([
       http<Pick<OverviewData, 'kpis' | 'series24h' | 'alerts' | 'pump'>>(`/farms/${farmId}/overview`),
@@ -218,7 +219,7 @@ export const api = {
 
   async getSoil(farmId: string): Promise<SoilData> {
     if (shouldMock()) {
-      const soil = mockSoil(farmId)
+      const soil = simulator.getSoil(farmId)
       if (store.npk.has(farmId)) soil.npk = store.npk.get(farmId) ?? null
       return mock(soil, (v) => ({ ...v, history15: [], history30: [], npk: null }))
     }
@@ -236,10 +237,14 @@ export const api = {
 
   /* ===== fertilizer & crops ===== */
 
-  /** No real advisory data source – always mock */
+  /** ICAR & Gujarat Agricultural Universities scientific advisory */
   getFertilizerPlan(farmId: string): Promise<FertilizerData> {
     const farm = MOCK_FARMS.find((f) => f.id === farmId)
-    return mock({ ...MOCK_FERTILIZER, acres: farm?.acres ?? MOCK_FERTILIZER.acres }, (v) => ({ ...v, items: [], topCrops: [], avoid: [] }))
+    const crop = farm?.crop ?? MOCK_FERTILIZER.crop
+    const acres = farm?.acres ?? MOCK_FERTILIZER.acres
+    const npk = store.npk.get(farmId) ?? simulator.getSoil(farmId).npk
+    const plan = calculateFertilizerPlan(crop, npk, acres)
+    return mock(plan, (v) => ({ ...v, items: [], topCrops: [], avoid: [] }))
   },
 
   /* ===== crop doctor / pest watch ===== */
@@ -267,7 +272,10 @@ export const api = {
   /* ===== irrigation & pump ===== */
 
   async getIrrigation(farmId: string): Promise<IrrigationData> {
-    if (shouldMock()) return mock({ ...mockIrrigation(farmId), pump: pumpFor(farmId) }, (v) => ({ ...v, history: [] }))
+    if (shouldMock()) {
+      const weather = await fetchLiveWeather(farmId).catch(() => undefined)
+      return mock({ ...simulator.getIrrigation(farmId, weather), pump: pumpFor(farmId) }, (v) => ({ ...v, history: [] }))
+    }
     const [core, { plan }] = await Promise.all([
       http<Pick<IrrigationData, 'pump' | 'powerAvailable' | 'history'>>(`/farms/${farmId}/irrigation`),
       Promise.resolve(mockIrrigation(farmId)),
@@ -278,8 +286,8 @@ export const api = {
   /** POST /farms/:id/pump – relay ON/OFF */
   async setPump(farmId: string, on: boolean): Promise<PumpState> {
     if (shouldMock()) {
-      const next: PumpState = { ...pumpFor(farmId), on, since: on ? new Date().toISOString() : null, trigger: on ? 'manual' : null }
-      const result = await mock(next, undefined, 900)
+      const next = simulator.setPump(farmId, on)
+      const result = await mock(next, undefined, 400)
       store.pump.set(farmId, result)
       return result
     }
@@ -288,7 +296,7 @@ export const api = {
 
   async setAutoMode(farmId: string, autoMode: boolean): Promise<PumpState> {
     if (shouldMock()) {
-      const result = await mock({ ...pumpFor(farmId), autoMode }, undefined, 500)
+      const result = await mock(simulator.setAutoMode(farmId, autoMode), undefined, 300)
       store.pump.set(farmId, result)
       return result
     }
@@ -299,7 +307,7 @@ export const api = {
 
   /** No real camera-AI detection source – always mock */
   getWildlife(_farmId: string): Promise<WildlifeEvent[]> {
-    return mock(MOCK_WILDLIFE, () => [])
+    return mock(simulator.getWildlife(_farmId), () => [])
   },
 
   /** Fires the siren + strobe for 5 s – always mock, no station relay for this yet */
@@ -324,7 +332,7 @@ export const api = {
   /* ===== alerts & SMS ===== */
 
   async getAlerts(): Promise<AlertsData> {
-    if (shouldMock()) return mock({ log: store.log, routing: store.routing }, (v) => ({ ...v, log: [] }))
+    if (shouldMock()) return mock({ log: simulator.getMessageLog(), routing: store.routing }, (v) => ({ ...v, log: [] }))
     return http('/alerts')
   },
 
@@ -340,9 +348,7 @@ export const api = {
   /** Re-send a failed SMS / call */
   async retryMessage(id: string): Promise<MessageLog> {
     if (shouldMock()) {
-      const msg = store.log.find((m) => m.id === id)
-      if (!msg) throw new ApiError('Message not found')
-      const updated = await mock({ ...msg, status: 'delivered' as const, attempts: msg.attempts + 1 }, undefined, 900)
+      const updated = await mock(simulator.retryMessage(id), undefined, 500)
       store.log = store.log.map((m) => (m.id === id ? updated : m))
       return updated
     }

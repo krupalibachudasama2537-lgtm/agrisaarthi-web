@@ -1,7 +1,8 @@
-import { type ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { DashboardContext } from '@/hooks/useDashboard'
 import { useApi } from '@/hooks/useApi'
 import { api } from '@/lib/api'
+import { simulator } from '@/lib/simulator'
 
 const FARM_KEY = 'agrisaarthi.farm'
 
@@ -18,7 +19,13 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const [farmId, setFarmIdState] = useState(readFarm)
   const { data: farmer } = useApi(api.getFarmer)
   const { data: farms } = useApi(api.getFarms)
-  const { data: station } = useApi(() => api.getStationHealth(farmId), [farmId])
+  const { data: station, mutate: mutateStation } = useApi(() => api.getStationHealth(farmId), [farmId])
+
+  useEffect(() => {
+    return simulator.subscribe(() => {
+      mutateStation(() => simulator.getStationHealth(farmId))
+    })
+  }, [farmId, mutateStation])
 
   const value = useMemo(() => {
     const list = farms ?? []

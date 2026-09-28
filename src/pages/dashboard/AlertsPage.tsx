@@ -19,6 +19,7 @@ import { useFormatters } from '@/hooks/useFormatters'
 import { ListenButton } from '@/components/dashboard/ListenButton'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { api } from '@/lib/api'
+import { simulator } from '@/lib/simulator'
 import { translateTerm } from '@/lib/glossary'
 import { cn } from '@/lib/utils'
 
@@ -44,6 +45,19 @@ const fill = (tpl: string, ft: TFunction) =>
 export default function AlertsPage() {
   const { t } = useTranslation()
   const query = useApi(api.getAlerts)
+  const { mutate } = query
+
+  useEffect(() => {
+    return simulator.subscribe(() => {
+      mutate((prev) => {
+        if (!prev) return prev
+        return {
+          ...prev,
+          log: [...simulator.getMessageLog()],
+        }
+      })
+    })
+  }, [mutate])
 
   return (
     <>

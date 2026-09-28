@@ -1,5 +1,5 @@
 import { AlertTriangle, ChevronRight, ClipboardList, Loader2, Save } from 'lucide-react'
-import { type FormEvent, type InputHTMLAttributes, type ReactNode, useState } from 'react'
+import { type FormEvent, type InputHTMLAttributes, type ReactNode, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -19,6 +19,7 @@ import { useApi } from '@/hooks/useApi'
 import { useDashboard } from '@/hooks/useDashboard'
 import { useFormatters } from '@/hooks/useFormatters'
 import { api } from '@/lib/api'
+import { simulator } from '@/lib/simulator'
 import { COLORS } from '@/lib/status'
 import { cn } from '@/lib/utils'
 
@@ -64,6 +65,22 @@ export default function SoilPage() {
   const { t } = useTranslation()
   const { farmId } = useDashboard()
   const query = useApi(() => api.getSoil(farmId), [farmId])
+  const { mutate } = query
+
+  useEffect(() => {
+    return simulator.subscribe(() => {
+      mutate((prev) => {
+        if (!prev) return prev
+        const fresh = simulator.getSoil(farmId)
+        return {
+          ...prev,
+          live: fresh.live,
+          history15: [...fresh.history15],
+          history30: [...fresh.history30],
+        }
+      })
+    })
+  }, [farmId, mutate])
 
   return (
     <>

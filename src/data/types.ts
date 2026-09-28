@@ -311,10 +311,11 @@ export interface WeatherDay {
   min: number
   rainChance: number
   condition: WeatherCondition
+  rainfall?: number
 }
 
 export interface Weather {
-  now: { temp: number; humidity: number; windKmh: number; condition: WeatherCondition }
+  now: { temp: number; humidity: number; windKmh: number; condition: WeatherCondition; rainfall?: number }
   days: WeatherDay[]
 }
 
@@ -381,6 +382,44 @@ export interface CropAvoid {
   reasonKey: string
 }
 
+export interface CalculationSteps {
+  cropName: string
+  source: string
+  soilRatings: {
+    n: { level: 'low' | 'medium' | 'high'; value?: number; factor: number; percentLabel: string }
+    p: { level: 'low' | 'medium' | 'high'; value?: number; factor: number; percentLabel: string }
+    k: { level: 'low' | 'medium' | 'high'; value?: number; factor: number; percentLabel: string }
+  }
+  baseDoseKgHa: { n: number; p: number; k: number }
+  adjustedDoseKgHa: { n: number; p: number; k: number }
+  perAcreRequirement: { n: number; p: number; k: number }
+  dapStep: {
+    p2o5NeededKg: number
+    dapKgPerAcre: number
+    dapBagsPerAcre: number
+    nSuppliedKg: number
+  }
+  ureaStep: {
+    totalNNeededKg: number
+    nFromDapKg: number
+    netNNeededKg: number
+    ureaKgPerAcre: number
+    ureaBagsPerAcre: number
+  }
+  mopStep: {
+    k2oNeededKg: number
+    mopKgPerAcre: number
+    mopBagsPerAcre: number
+  }
+  costStep: {
+    dapCost: number
+    ureaCost: number
+    mopCost: number
+    gypsumCost: number
+    totalPerAcre: number
+  }
+}
+
 export interface FertilizerData {
   crop: string
   acres: number
@@ -388,6 +427,7 @@ export interface FertilizerData {
   topCrops: CropCard[]
   avoid: CropAvoid[]
   tipKeys: string[]
+  calculationSteps?: CalculationSteps
 }
 
 /* ---- Crop doctor / pest watch ---- */
@@ -448,7 +488,14 @@ export interface PumpRun {
 }
 
 export interface IrrigationData {
-  plan: { minutes: number; startAt: string; litres: number; reasons: IrrigationReason[] }
+  plan: {
+    minutes: number
+    startAt: string
+    litres: number
+    reasons: IrrigationReason[]
+    rainExpected?: boolean
+    rainChance?: number
+  }
   pump: PumpState
   powerAvailable: boolean
   history: PumpRun[]

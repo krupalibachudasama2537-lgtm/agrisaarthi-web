@@ -1,5 +1,5 @@
-import { CalendarClock, CloudSun, Droplets, Layers, Loader2, type LucideIcon, ShieldCheck, Sprout, Zap } from 'lucide-react'
-import { useState } from 'react'
+import { CalendarClock, CloudRain, CloudSun, Droplets, Layers, Loader2, type LucideIcon, ShieldCheck, Sprout, Zap } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { PumpSwitch } from '@/components/dashboard/PumpSwitch'
@@ -15,6 +15,7 @@ import { useDashboard } from '@/hooks/useDashboard'
 import { useFormatters } from '@/hooks/useFormatters'
 import { useGlossary } from '@/hooks/useGlossary'
 import { api } from '@/lib/api'
+import { simulator } from '@/lib/simulator'
 
 const REASON_ICON: Record<IrrigationReason['id'], LucideIcon> = {
   moisture: Droplets,
@@ -33,6 +34,25 @@ export default function IrrigationPage() {
   const { t } = useTranslation()
   const { farmId } = useDashboard()
   const query = useApi(() => api.getIrrigation(farmId), [farmId])
+  const { mutate } = query
+
+  useEffect(() => {
+    return simulator.subscribe(() => {
+      mutate((prev) => {
+        if (!prev) return prev
+        const fresh = simulator.getIrrigation(farmId)
+        return {
+          ...prev,
+          pump: fresh.pump,
+          plan: {
+            ...prev.plan,
+            reasons: fresh.plan.reasons,
+          },
+          history: [...fresh.history],
+        }
+      })
+    })
+  }, [farmId, mutate])
 
   return (
     <>
@@ -75,15 +95,22 @@ function IrrigationContent({ data, onPump }: { data: IrrigationData; onPump: (p:
               {t('dash.irr.recTitle')}
             </p>
             <p className="mt-3 text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
-              {t('dash.irr.recText', { min: data.plan.minutes, time: fmt.time(data.plan.startAt) })}
+              {data.plan.rainExpected
+                ? t('dash.irr.recTextRain', { chance: data.plan.rainChance ?? 80 })
+                : t('dash.irr.recText', { min: data.plan.minutes, time: fmt.time(data.plan.startAt) })}
             </p>
-            <p className="mt-2 text-sm text-white/75">{t('dash.irr.litres', { litres: fmt.number(data.plan.litres) })}</p>
+            <p className="mt-2 text-sm text-white/75">
+              {data.plan.rainExpected
+                ? t('dash.irr.rainSaveWater')
+                : t('dash.irr.litres', { litres: fmt.number(data.plan.litres) })}
+            </p>
           </div>
           <CardContent className="pt-5">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-ink/60">{t('dash.irr.why')}</h3>
             <ul className="mt-3 grid gap-2 sm:grid-cols-2">
               {data.plan.reasons.map((r) => {
-                const Icon = REASON_ICON[r.id]
+                const Icon = r.id === 'weather' && data.plan.rainExpected ? CloudRain : REASON_ICON[r.id]
+                const reasonKey = (r.params as { textKey?: string })?.textKey ?? r.id
                 return (
                   <li key={r.id} className="flex items-center gap-3 rounded-xl bg-surface p-3">
                     <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white text-ink/60 shadow-sm">
@@ -92,7 +119,7 @@ function IrrigationContent({ data, onPump }: { data: IrrigationData; onPump: (p:
                     <div className="min-w-0 flex-1">
                       <p className="text-caption text-ink/60">{t(`dash.irr.reasons.${r.id}`)}</p>
                       <p className="truncate text-sm font-semibold">
-                        {r.id === 'soil' || r.id === 'stage' ? g(String(r.params.term)) : t(`dash.irr.reasonText.${r.id}`, r.params)}
+                        {r.id === 'soil' || r.id === 'stage' ? g(String(r.params.term)) : t(`dash.irr.reasonText.${reasonKey}`, r.params)}
                       </p>
                     </div>
                     <StatusDot status={r.status} className="size-2" />

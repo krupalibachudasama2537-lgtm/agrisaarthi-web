@@ -14,7 +14,7 @@ import {
   TrendingUp,
   Wind,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { TimeSeriesChart } from '@/components/dashboard/charts'
@@ -31,6 +31,7 @@ import { useFormatters } from '@/hooks/useFormatters'
 import { useGlossary } from '@/hooks/useGlossary'
 import { ListenButton } from '@/components/dashboard/ListenButton'
 import { api } from '@/lib/api'
+import { simulator } from '@/lib/simulator'
 import { translateParams } from '@/lib/glossary'
 import { COLORS } from '@/lib/status'
 import { cn } from '@/lib/utils'
@@ -66,14 +67,36 @@ export default function OverviewPage() {
   const { farmId, farm, farmer } = useDashboard()
   const fmt = useFormatters()
   const query = useApi(() => api.getOverview(farmId), [farmId])
+  const { mutate } = query
   const [metric, setMetric] = useState<ChartMetric>('moisture')
+
+  useEffect(() => {
+    return simulator.subscribe(() => {
+      mutate((prev) => {
+        if (!prev) return prev
+        const fresh = simulator.getOverview(farmId)
+        return {
+          ...prev,
+          kpis: fresh.kpis,
+          series24h: [...fresh.series24h],
+          alerts: fresh.alerts,
+          pump: fresh.pump,
+        }
+      })
+    })
+  }, [farmId, mutate])
 
   return (
     <>
       <PageHeader
         title={t('dash.overview.greeting', { name: farmer?.name.split(' ')[0] ?? '' })}
         subtitle={farm ? t('dash.overview.subtitle', { farm: g(farm.name), crop: g(farm.crop), stage: g(farm.cropStage) }) : undefined}
-        actions={<Badge variant="outline">{t('dash.common.sample')}</Badge>}
+        actions={
+          <Badge variant="outline" className="gap-1.5">
+            <span className="size-1.5 animate-pulse rounded-full bg-ok" />
+            {t('dash.common.live')}
+          </Badge>
+        }
       />
 
       <AsyncView query={query} skeleton={<PageSkeleton kpis={6} />}>
@@ -271,6 +294,12 @@ function WeatherBlock({ weather }: { weather: Weather }) {
           <p className="mt-1 text-xs text-ink/60">{t(`dash.conditions.${weather.now.condition}`)}</p>
         </div>
         <div className="ml-auto space-y-1 text-right text-caption text-ink/60">
+          {weather.now.rainfall !== undefined && (
+            <p className="flex items-center justify-end gap-1">
+              <CloudRain className="size-3" />
+              {t('dash.overview.rainfall', { mm: weather.now.rainfall })}
+            </p>
+          )}
           <p className="flex items-center justify-end gap-1">
             <Droplets className="size-3" />
             {t('dash.overview.humidity', { pct: weather.now.humidity })}
@@ -281,11 +310,11 @@ function WeatherBlock({ weather }: { weather: Weather }) {
           </p>
         </div>
       </div>
-      <ul className="mt-5 grid grid-cols-4 gap-2">
+      <ul className="mt-5 flex gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-7 sm:overflow-visible sm:pb-0">
         {weather.days.map((d) => {
           const Icon = CONDITION_ICON[d.condition]
           return (
-            <li key={d.date} className="rounded-xl bg-surface px-1 py-2.5 text-center">
+            <li key={d.date} className="min-w-[68px] flex-1 rounded-xl bg-surface px-1.5 py-2.5 text-center sm:min-w-0">
               <p className="truncate text-caption font-semibold text-ink/60">{fmt.relativeDay(d.date)}</p>
               <Icon className={cn('mx-auto my-1.5 size-5', d.condition === 'rain' ? 'text-sky-600' : 'text-ink/60')} />
               <p className="text-xs font-semibold tabular-nums">

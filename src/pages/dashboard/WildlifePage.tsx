@@ -1,5 +1,5 @@
 import { Camera, Image as ImageIcon, Loader2, type LucideIcon, MapPin, MessageSquare, Moon, PawPrint, Phone, Siren, Zap } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { AsyncView, EmptyState, PageHeader, StatusBadge } from '@/components/dashboard/states'
@@ -13,6 +13,7 @@ import { useDashboard } from '@/hooks/useDashboard'
 import { useFormatters } from '@/hooks/useFormatters'
 import { useGlossary } from '@/hooks/useGlossary'
 import { api } from '@/lib/api'
+import { simulator } from '@/lib/simulator'
 import { cn } from '@/lib/utils'
 
 const ACTION_ICON: Record<DeterrentAction, LucideIcon> = {
@@ -50,7 +51,14 @@ export default function WildlifePage() {
   const { t } = useTranslation()
   const { farmId } = useDashboard()
   const query = useApi(() => api.getWildlife(farmId), [farmId])
+  const { mutate } = query
   const [testing, setTesting] = useState(false)
+
+  useEffect(() => {
+    return simulator.subscribe(() => {
+      mutate(() => [...simulator.getWildlife(farmId)])
+    })
+  }, [farmId, mutate])
 
   const testSiren = async () => {
     setTesting(true)
