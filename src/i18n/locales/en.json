@@ -1,0 +1,406 @@
+{
+  "nav": {
+    "features": "Features",
+    "how": "How it works",
+    "hardware": "Hardware",
+    "team": "Team",
+    "faq": "FAQ",
+    "dashboard": "Dashboard",
+    "demo": "Book a demo",
+    "menu": "Menu",
+    "close": "Close",
+    "language": "Language",
+    "home": "AgriSaarthi home",
+    "main": "Main navigation",
+    "skip": "Skip to main content"
+  },
+  "common": {
+    "scroll": "Scroll to explore",
+    "live": "Live",
+    "mock": "Sample data",
+    "indicative": "Indicative targets from field-trial estimates."
+  },
+  "badges": {
+    "solar": "Solar Powered",
+    "mesh": "Zigbee Mesh",
+    "offline": "Works Offline",
+    "icar": "ICAR + State University Guidelines"
+  },
+  "hero": {
+    "eyebrow": "Solar-powered AI + IoT station",
+    "title1": "From Guesswork",
+    "title2": "to Precision Farming",
+    "sub": "AgriSaarthi watches your soil, crops and fence line day and night, then tells you exactly what to do: on the dashboard, by SMS, by phone call, in Gujarati or Hindi.",
+    "ctaPrimary": "Book a demo",
+    "ctaSecondary": "See how it works",
+    "soilScore": "Soil Health Score",
+    "byZone": "By field zone",
+    "waterSaved": "Water Saved",
+    "vsFlood": "vs. flood irrigation",
+    "moisture": "Soil moisture",
+    "every15": "every 15 min",
+    "detected": "Early blight",
+    "plotLabel": "Plot A · 2 acres",
+    "dryZone": "Dry zone"
+  },
+  "nature": {
+    "eyebrow": "In the field",
+    "title": "A quiet station that never stops watching.",
+    "body": "One solar pole. Soil probes, a weather shield, a night camera and a siren. It keeps working through power cuts, weak networks and long nights at the edge of the farm.",
+    "tagMoisture": "Moisture",
+    "tagAnimal": "Nilgai"
+  },
+  "about": {
+    "eyebrow": "About AgriSaarthi",
+    "title": "We combine IoT sensors, AI vision and solar power",
+    "body": "Farmers still decide on water, fertilizer and sprays by guesswork, and they often find out about disease, pests or animals too late. AgriSaarthi puts a lab, an agronomist and a watchman on one solar pole, and it works offline.",
+    "insetLabel": "Soil moisture · Zone 3",
+    "delivers": "What the station delivers",
+    "stats": {
+      "upTo": "Up to",
+      "water": {
+        "title": "40%",
+        "caption": "Less water used"
+      },
+      "cost": {
+        "title": "Lower input cost",
+        "caption": "Exact bags per acre"
+      },
+      "alerts": {
+        "title": "Faster alerts",
+        "caption": "SMS + call in seconds"
+      },
+      "yield": {
+        "title": "Protected yield",
+        "caption": "Disease, pest, animal"
+      }
+    }
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "Three steps from soil to decision",
+    "body": "Sensors and a camera collect data every 15–30 minutes. A rule engine and offline AI turn it into one clear action.",
+    "steps": {
+      "scan": {
+        "title": "Field Scan",
+        "body": "Soil probes read moisture, temperature, humidity, pH and EC. The IR camera and PIR sensor watch the crop and the fence line. Weather data adds rain and heat forecasts."
+      },
+      "analysis": {
+        "title": "AI Analysis",
+        "body": "An on-device rule engine built on ICAR and state university guidelines works out fertilizer doses, crop choices and irrigation needs. Offline AI identifies diseases, pests and wild animals."
+      },
+      "action": {
+        "title": "Precision Action",
+        "body": "The pump relay switches on only when needed, and you get exact fertilizer bags and cost. Alerts reach you on the dashboard, by SMS, by call and by voice, before damage spreads."
+      }
+    },
+    "flowTitle": "System flow",
+    "flow": {
+      "collect": {
+        "title": "Data Collection",
+        "body": "Sensors, camera, weather"
+      },
+      "process": {
+        "title": "Processing & AI",
+        "body": "Rule engine + offline AI"
+      },
+      "alerts": {
+        "title": "Alerts",
+        "body": "Dashboard, SMS, call, voice"
+      },
+      "action": {
+        "title": "Farmer Action",
+        "body": "Pump, fertilizer, crops, protection"
+      },
+      "outcome": {
+        "title": "Healthy Farm",
+        "body": "Less cost, less risk, more profit"
+      }
+    }
+  },
+  "detect": {
+    "eyebrow": "The loop",
+    "title": "From Detection to Action",
+    "body": "Every alert comes with a next step. No raw numbers to decode.",
+    "cards": {
+      "detect": {
+        "title": "Detect",
+        "body": "Leaf photo, trap photo or night camera frame. The AI names the problem in seconds, even offline."
+      },
+      "decide": {
+        "title": "Decide",
+        "body": "The rule engine weighs soil, weather and crop stage, then picks the right dose, time and method."
+      },
+      "act": {
+        "title": "Act",
+        "body": "Pump ON/OFF, fertilizer bags and cost, spray dose, siren and strobe, all in your language."
+      }
+    }
+  },
+  "econ": {
+    "eyebrow": "Impact",
+    "title": "Better economics, less chemistry",
+    "body": "Blanket watering and spraying waste money and harm the soil. AgriSaarthi applies inputs only where and when the field needs them.",
+    "points": {
+      "one": "Fertilizer in bags per acre with estimated ₹ cost, before you buy",
+      "two": "Irrigation timed to moisture, weather and crop stage",
+      "three": "Sell grain at the right moisture and the best mandi price"
+    },
+    "cta": "Estimate my savings",
+    "chips": {
+      "fertilizer": "Fertilizer",
+      "water": "Water",
+      "profit": "Profit / acre",
+      "alerts": "Alert time"
+    }
+  },
+  "features": {
+    "eyebrow": "Features",
+    "title": "Twelve features. One station.",
+    "body": "Every feature works from the solar station and shows up on the dashboard. Critical alerts also reach basic phones.",
+    "items": {
+      "soil": {
+        "title": "Soil moisture, temperature & humidity",
+        "benefit": "Live readings every 15–30 min, with a “soil too dry” alert."
+      },
+      "chemistry": {
+        "title": "Soil pH & salinity (EC)",
+        "benefit": "Probes in a 1:2.5 soil solution. Enter N, P, K from your Soil Health Card."
+      },
+      "fertilizer": {
+        "title": "Fertilizer advice with cost",
+        "benefit": "Bags per acre and estimated ₹ cost, from ICAR + state university rules."
+      },
+      "crop": {
+        "title": "Crop guidance",
+        "benefit": "Top 3 crops with expected profit, crops to avoid and soil tips."
+      },
+      "disease": {
+        "title": "Crop disease detection",
+        "benefit": "Upload a leaf photo and get the disease name and treatment. Works offline."
+      },
+      "pest": {
+        "title": "Pest detection",
+        "benefit": "Identifies the pest, recommends a dose and shows the village pest trend."
+      },
+      "irrigation": {
+        "title": "Irrigation + pump control",
+        "benefit": "Uses moisture, weather, soil and crop stage. The relay switches the pump ON/OFF."
+      },
+      "mesh": {
+        "title": "Self-healing Zigbee mesh",
+        "benefit": "Links many stations on large farms and reroutes if one node drops."
+      },
+      "alerts": {
+        "title": "Dashboard, SMS & call alerts",
+        "benefit": "SMS and calls reach any basic phone, no internet needed."
+      },
+      "voice": {
+        "title": "Voice in Gujarati & Hindi",
+        "benefit": "Advice spoken from the box speaker, on alert calls and on the dashboard."
+      },
+      "animal": {
+        "title": "Wild animal alert",
+        "benefit": "PIR + IR night camera trigger a siren and strobe, then a call, SMS and photo."
+      },
+      "grain": {
+        "title": "Grain moisture + mandi price",
+        "benefit": "Shows when grain is ready and where and when to sell at the best price."
+      }
+    },
+    "preview": {
+      "tooDry": "Soil too dry",
+      "temp": "Temp",
+      "humidity": "Humidity",
+      "moisture": "Moisture",
+      "fromCard": "From Soil Health Card",
+      "total": "Total / acre",
+      "avoid": "Avoid",
+      "offline": "Offline",
+      "villageTrend": "Village trend",
+      "pump": "Pump",
+      "on": "ON",
+      "off": "OFF",
+      "run": "Run {{min}} min",
+      "rain": "Rain {{pct}}%",
+      "nodes": "{{online}}/{{total}} nodes online",
+      "rerouted": "Rerouted",
+      "incomingCall": "Incoming call",
+      "speaking": "Speaking",
+      "siren": "Siren",
+      "strobe": "Strobe",
+      "ready": "Ready to sell",
+      "bestDay": "Best: {{market}}, {{day}}",
+      "minAgo": "{{count}} min ago",
+      "treatment": "Mancozeb 75% WP · 2.5 g/L, repeat after 10 days",
+      "pestDose": "Pheromone traps 5/acre + Emamectin 5% SG 0.4 g/L",
+      "sms": "AgriSaarthi: Soil too dry (22%). Pump started for 35 min.",
+      "tip": "Add 2 t/acre farmyard manure to lower pH",
+      "stage": "Flowering",
+      "soilType": "Medium black"
+    }
+  },
+  "hardware": {
+    "eyebrow": "Hardware",
+    "title": "One solar pole. Everything on it.",
+    "body": "A compact, weatherproof station that runs on its own solar panel and battery. Tap a point to see what each part does.",
+    "parts": {
+      "solar": {
+        "title": "Solar panel + battery",
+        "body": "Runs everything off-grid, day and night."
+      },
+      "weather": {
+        "title": "Weather shield",
+        "body": "Air temperature and humidity."
+      },
+      "siren": {
+        "title": "Siren + strobe",
+        "body": "Scares off wild animals at night."
+      },
+      "camera": {
+        "title": "IR night camera",
+        "body": "Crop, pest and animal photos."
+      },
+      "pir": {
+        "title": "PIR motion sensor",
+        "body": "Wakes the camera on movement."
+      },
+      "zigbee": {
+        "title": "Zigbee + GSM antennas",
+        "body": "Mesh link to other stations, plus SMS and calls."
+      },
+      "controller": {
+        "title": "Controller + display + speaker",
+        "body": "Offline AI, rule engine and voice output."
+      },
+      "probes": {
+        "title": "Soil probes",
+        "body": "Moisture, temperature, pH and EC."
+      },
+      "pump": {
+        "title": "Pump relay",
+        "body": "Switches the pump ON/OFF automatically."
+      }
+    },
+    "alt": "AgriSaarthi solar station: solar panel, weather shield, siren, IR camera, PIR sensor, controller box with display, soil probes and water pump"
+  },
+  "team": {
+    "eyebrow": "Team",
+    "title": "Built for Smart India Hackathon 2026",
+    "body": "A student team working on low-cost, offline-first technology for small and marginal farmers.",
+    "sih": "SIH 2026 · Hardware Edition",
+    "psLabel": "Problem statement",
+    "ps": "Build a solar-powered AI smart farming station that enables real-time soil monitoring, crop health detection, intelligent irrigation, fertilizer recommendation, and wildlife alerts for efficient and sustainable farming.",
+    "roles": {
+      "lead": "Team lead · Systems",
+      "hardware": "Hardware & IoT",
+      "ai": "AI / Computer vision",
+      "web": "Web & dashboard",
+      "agronomy": "Agronomy research",
+      "design": "Design & voice UX"
+    },
+    "member": "Member {{n}}",
+    "psOfficial": "Official text (English)"
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Questions farmers ask",
+    "body": "Can't find your answer? Call us or book a field demo.",
+    "items": {
+      "offline": {
+        "q": "Does it work without internet?",
+        "a": "Yes. Disease detection, the rule engine and alerts run on the device. SMS and calls use the basic GSM network, so they work in low-signal areas."
+      },
+      "phone": {
+        "q": "I only have a basic phone. Can I use it?",
+        "a": "Yes. All critical alerts come as SMS and voice calls in Gujarati or Hindi. The web dashboard is optional."
+      },
+      "npk": {
+        "q": "How is N, P, K measured?",
+        "a": "pH and EC are measured by probes in a 1:2.5 soil solution. N, P and K are entered manually from your government Soil Health Card."
+      },
+      "accuracy": {
+        "q": "How accurate is the disease detection?",
+        "a": "The model is trained on common crops of Gujarat and nearby states. Each result shows a confidence score and a treatment. Low-confidence results are marked for expert review."
+      },
+      "power": {
+        "q": "What happens during cloudy days or power cuts?",
+        "a": "The station has its own solar panel and battery with backup for several cloudy days. It does not depend on farm electricity."
+      },
+      "cost": {
+        "q": "Where do the fertilizer costs come from?",
+        "a": "Doses follow ICAR and state agricultural university guidelines. Costs use current bag prices, which you can update."
+      },
+      "mesh": {
+        "q": "Do I need the Zigbee mesh?",
+        "a": "Only for large farms. A single station covers a typical small farm. On bigger farms, stations link up and reroute data automatically."
+      }
+    }
+  },
+  "cta": {
+    "eyebrow": "Get started",
+    "title": "See AgriSaarthi on your own field",
+    "body": "We'll bring the station to your farm, test your soil and show the dashboard, SMS and voice alerts live.",
+    "name": "Your name",
+    "phone": "Mobile number",
+    "village": "Village / district",
+    "submit": "Book a demo",
+    "sending": "Sending…",
+    "thanks": "Thank you! We will call you within 2 days.",
+    "reference": "Reference",
+    "dashboard": "Preview dashboard"
+  },
+  "footer": {
+    "tagline": "Solar-powered AI + IoT smart farming station.",
+    "product": "Product",
+    "project": "Project",
+    "sih": "Smart India Hackathon 2026",
+    "rights": "© 2026 AgriSaarthi. Student project for SIH 2026.",
+    "imagery": "Photos: Unsplash (placeholders)."
+  },
+  "glossary": {
+    "groundnut": "Groundnut",
+    "cumin": "Cumin",
+    "wheat": "Wheat",
+    "paddy": "Paddy",
+    "sugarcane": "Sugarcane",
+    "banana": "Banana",
+    "cotton": "Cotton",
+    "tomato": "Tomato",
+    "urea": "Urea",
+    "dap": "DAP",
+    "mop": "MOP",
+    "gypsum": "Gypsum",
+    "main_farm": "Main farm",
+    "river_plot": "River plot",
+    "flowering": "Flowering",
+    "boll_formation": "Boll formation",
+    "medium_black": "Medium black",
+    "sandy_loam": "Sandy loam",
+    "kotda_sangani": "Kotda Sangani",
+    "jasdan": "Jasdan",
+    "rajkot": "Rajkot",
+    "gondal": "Gondal",
+    "unjha": "Unjha",
+    "east_fence": "East fence",
+    "north_boundary": "North boundary",
+    "gate": "Gate",
+    "pump_house": "Pump house",
+    "well": "Well",
+    "middle": "Middle",
+    "north": "North",
+    "south": "South",
+    "gateway": "Gateway",
+    "rajkot_apmc": "Rajkot APMC",
+    "gondal_apmc": "Gondal APMC",
+    "jasdan_apmc": "Jasdan APMC",
+    "unjha_apmc": "Unjha APMC",
+    "aphids": "Aphids",
+    "thrips": "Thrips",
+    "pink_bollworm": "Pink bollworm",
+    "nilgai": "Nilgai",
+    "nilgai_herd": "Nilgai herd",
+    "early_blight": "Early blight",
+    "thu": "Thu"
+  }
+}

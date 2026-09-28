@@ -1,0 +1,175 @@
+@import '@fontsource-variable/manrope';
+/* Indic scripts are self-hosted; unicode-range means they only download when हिन्दी / ગુજરાતી text is on screen */
+@import '@fontsource-variable/noto-sans-devanagari';
+@import '@fontsource-variable/noto-sans-gujarati';
+@import 'lenis/dist/lenis.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* shadcn/ui semantic tokens (HSL) */
+    --background: 100 9% 50%;
+    --foreground: 100 13% 5%;
+    --primary: 82 45% 33%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 96 14% 91%;
+    --secondary-foreground: 100 13% 5%;
+    --muted: 96 14% 91%;
+    --muted-foreground: 100 6% 38%;
+    --accent: 75 67% 65%;
+    --accent-foreground: 100 13% 5%;
+    --border: 96 12% 84%;
+    --input: 96 12% 84%;
+    --ring: 82 45% 33%;
+    --radius: 0.875rem;
+  }
+
+  html {
+    @apply bg-sage text-ink antialiased;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-sage font-sans text-ink;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    @apply bg-lime text-ink;
+  }
+
+  /*
+   * One focus indicator everywhere: 2px outline, 2px offset.
+   * Dark green (#1F4D1F, 9:1 on white) on light surfaces, lime (#C6E36B, 11:1 on ink) on dark ones.
+   * Components with clipped shapes (chamfer buttons) draw an inset ring instead.
+   */
+  :focus-visible {
+    outline: 2px solid #1f4d1f;
+    outline-offset: 2px;
+  }
+
+  [data-tone='dark'] :focus-visible,
+  [data-tone='ink'] :focus-visible,
+  [data-tone='image'] :focus-visible,
+  .on-dark :focus-visible {
+    outline-color: #c6e36b;
+  }
+
+  img {
+    @apply select-none;
+  }
+
+  /*
+   * Self-hosted Noto only when the page is in Hindi / Gujarati.
+   * On the English page the few Indic glyphs (language switch, samples) use the OS font,
+   * so English visitors don't download ~230 KB of Indic webfonts.
+   */
+  html:lang(hi) body,
+  html:lang(hi) .font-display {
+    font-family: 'Manrope Variable', Manrope, 'Noto Sans Devanagari Variable', 'Noto Sans Gujarati Variable', ui-sans-serif, sans-serif;
+  }
+  html:lang(gu) body,
+  html:lang(gu) .font-display {
+    font-family: 'Manrope Variable', Manrope, 'Noto Sans Gujarati Variable', 'Noto Sans Devanagari Variable', ui-sans-serif, sans-serif;
+  }
+
+  /* Devanagari / Gujarati read poorly with Latin-style tight or wide tracking */
+  html:lang(hi) body *,
+  html:lang(gu) body * {
+    letter-spacing: normal !important;
+  }
+}
+
+@layer components {
+  /* "Skip to main content" – visible only when focused */
+  .skip-link {
+    @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-xl bg-olive-deep px-4 py-3 text-sm font-semibold text-white shadow-lg transition-transform;
+  }
+  .skip-link:focus {
+    @apply translate-y-0;
+  }
+
+  /* Headline style shared by every section: big, tight grotesk */
+  .heading-display {
+    @apply font-display font-semibold tracking-[-0.035em];
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Button with one clipped corner, like the reference "Book a Demo ›" */
+  .chamfer {
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  }
+
+  .chamfer-sm {
+    clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
+  }
+
+  /* Faint "+" crosshair grid used on the white sections */
+  .bg-crosshair {
+    background-image:
+      linear-gradient(to right, rgba(11, 13, 10, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(11, 13, 10, 0.06) 1px, transparent 1px);
+    background-size: 14px 1px, 1px 14px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .grid-crosses {
+    background-image: radial-gradient(circle, rgba(11, 13, 10, 0.1) 1px, transparent 1.5px);
+    background-size: 120px 120px;
+    background-position: 60px 60px;
+  }
+
+  /* Soil strata for the 3D plot side faces */
+  .soil-strata {
+    background:
+      linear-gradient(
+        to bottom,
+        #6f8a3a 0,
+        #6f8a3a 6%,
+        #5a3e2b 6%,
+        #4a3222 38%,
+        #6b4c35 38%,
+        #5b4130 64%,
+        #3b271a 64%,
+        #2a1c12 100%
+      );
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+/* hero mini bar chart */
+@keyframes bar-rise {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
