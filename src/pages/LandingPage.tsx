@@ -10,7 +10,6 @@ import { Footer } from '@/components/landing/Footer'
 import { Hardware } from '@/components/landing/Hardware'
 import { Hero } from '@/components/landing/Hero'
 import { HowItWorks } from '@/components/landing/HowItWorks'
-import { Team } from '@/components/landing/Team'
 
 /**
  * Marketing landing page.
@@ -28,11 +27,10 @@ export default function LandingPage() {
       <main id="main" tabIndex={-1} className="outline-none">
         <Hero />
         <AboutDark />
+        <Hardware />
         <HowItWorks />
         <DetectionToAction />
         <Features />
-        <Hardware />
-        <Team />
         <Faq />
         <Cta />
       </main>

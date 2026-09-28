@@ -14,7 +14,6 @@ const LINKS = [
   { id: 'features', key: 'nav.features' },
   { id: 'how-it-works', key: 'nav.how' },
   { id: 'hardware', key: 'nav.hardware' },
-  { id: 'team', key: 'nav.team' },
   { id: 'faq', key: 'nav.faq' },
 ] as const
 
