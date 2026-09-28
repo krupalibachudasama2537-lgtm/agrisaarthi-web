@@ -390,10 +390,14 @@ function AnimalPreview({ data }: PreviewProps) {
           )}
         </div>
         <div className="flex gap-1.5 text-ink/60">
-          <Phone className="size-3.5" />
-          <MessageSquare className="size-3.5" />
-          <ImageIcon className="size-3.5" />
-          <CheckCircle2 className="size-3.5 text-olive" />
+          <Phone aria-hidden className="size-3.5" />
+          <span className="sr-only">{t('features.preview.callMade')}</span>
+          <MessageSquare aria-hidden className="size-3.5" />
+          <span className="sr-only">{t('features.preview.smsSent')}</span>
+          <ImageIcon aria-hidden className="size-3.5" />
+          <span className="sr-only">{t('features.preview.photoSaved')}</span>
+          <CheckCircle2 aria-hidden className="size-3.5 text-olive" />
+          <span className="sr-only">{t('features.preview.confirmed')}</span>
         </div>
       </div>
     </div>

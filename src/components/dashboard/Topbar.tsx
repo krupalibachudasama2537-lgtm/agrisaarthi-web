@@ -28,11 +28,12 @@ function BatteryChip() {
   const Icon = station.solarCharging ? BatteryCharging : low ? BatteryLow : BatteryMedium
   return (
     <span className="inline-flex h-8 items-center gap-2 rounded-full border border-surface-line bg-white px-3 text-xs font-medium text-ink/70">
-      <Icon className={cn('size-4', low ? 'text-crit' : 'text-ok')} />
+      <Icon aria-hidden className={cn('size-4', low ? 'text-crit' : 'text-ok')} />
+      <span className="sr-only">{station.solarCharging ? t('dash.top.charging') : low ? t('dash.top.lowBattery') : ''} </span>
       <span className="font-semibold tabular-nums text-ink">{station.batteryPct}%</span>
       <span className="hidden h-3 w-px bg-surface-line sm:block" aria-hidden />
       <span className="hidden items-center gap-1 sm:inline-flex">
-        <RefreshCw className="size-3 text-ink/60" />
+        <RefreshCw aria-hidden className="size-3 text-ink/60" />
         {t('dash.top.lastSync', { min: station.lastSyncMinutes })}
       </span>
     </span>

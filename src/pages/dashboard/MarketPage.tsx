@@ -146,7 +146,8 @@ function MarketContent({ data }: { data: MarketData }) {
                         <TableCell className="text-right font-semibold tabular-nums">{fmt.inr(m.price)}</TableCell>
                         <TableCell className="text-right">
                           <span className={cn('inline-flex items-center gap-0.5 text-xs font-semibold tabular-nums', m.change >= 0 ? 'text-ok' : 'text-crit')}>
-                            {m.change >= 0 ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}
+                            {m.change >= 0 ? <ArrowUpRight aria-hidden className="size-3.5" /> : <ArrowDownRight aria-hidden className="size-3.5" />}
+                            <span className="sr-only">{m.change >= 0 ? t('dash.market.changeUp') : t('dash.market.changeDown')} </span>
                             {Math.abs(m.change)}%
                           </span>
                         </TableCell>

@@ -146,13 +146,13 @@ export function Hero() {
   return (
     <StageCard id="top" tone="mist" innerClassName="min-h-[calc(100svh-1rem)] sm:min-h-[calc(100svh-1.5rem)] lg:min-h-[calc(100svh-2rem)]">
       {/* misty backdrop */}
-      {/* tiny (≈15 KB) on purpose: it is shown blurred at 35 % opacity */}
+      {/* tiny (≈15 KB) but fills the hero viewport, so it's the LCP element – fetch it eagerly */}
       <img
         src={IMAGES.heroMist}
         alt=""
         aria-hidden
         decoding="async"
-        fetchPriority="low"
+        fetchPriority="high"
         className="absolute inset-0 -z-10 size-full scale-110 object-cover opacity-35 blur-[6px] saturate-50"
       />
       <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-mist-light/95 via-mist/70 to-sage-200/90" />

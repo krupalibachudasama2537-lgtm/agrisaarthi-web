@@ -233,7 +233,7 @@ function SmsPreview() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant={info.parts > 1 ? 'warn' : 'brand'}>{t('dash.alerts.chars', { count: info.len, parts: info.parts })}</Badge>
-            {info.unicode && <Badge variant="outline">Unicode</Badge>}
+            {info.unicode && <Badge variant="outline">{t('dash.alerts.unicodeBadge')}</Badge>}
           </div>
           <p className="flex items-start gap-2 text-xs text-ink/60">
             <Info className="mt-0.5 size-3.5 shrink-0" />

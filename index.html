@@ -10,6 +10,14 @@
       content="AgriSaarthi – a solar-powered AI + IoT smart farming station for soil monitoring, crop health, irrigation, fertilizer advice and wildlife alerts."
     />
     <link rel="preconnect" href="https://images.unsplash.com" />
+    <!-- hero mist backdrop (src/data/images.ts IMAGES.heroMist) is the LCP element; preload it since
+         React only inserts the <img> after the JS bundle parses, which the preload scanner can't see -->
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=480&q=40"
+    />
     <title>AgriSaarthi · Smart Farming Station</title>
   </head>
   <body>
