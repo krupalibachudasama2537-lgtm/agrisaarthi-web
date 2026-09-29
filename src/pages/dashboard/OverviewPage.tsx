@@ -1,13 +1,17 @@
 import {
   Bell,
   Bug,
+  CalendarDays,
   ChevronRight,
   Cloud,
   CloudRain,
   CloudSun,
   Droplets,
+  LayoutGrid,
   Leaf,
+  List,
   type LucideIcon,
+  MapPin,
   PawPrint,
   Sprout,
   Sun,
@@ -41,6 +45,29 @@ const CONDITION_ICON: Record<WeatherCondition, LucideIcon> = {
   partly: CloudSun,
   cloudy: Cloud,
   rain: CloudRain,
+}
+
+const CONDITION_THEME: Record<WeatherCondition, { bg: string; text: string; ring: string }> = {
+  sunny: {
+    bg: 'bg-amber-500/10 dark:bg-amber-400/15',
+    text: 'text-amber-500 dark:text-amber-400',
+    ring: 'ring-amber-500/20 dark:ring-amber-400/30',
+  },
+  partly: {
+    bg: 'bg-amber-500/10 dark:bg-amber-400/15',
+    text: 'text-amber-500 dark:text-amber-400',
+    ring: 'ring-amber-400/20 dark:ring-amber-400/30',
+  },
+  cloudy: {
+    bg: 'bg-slate-500/10 dark:bg-slate-400/15',
+    text: 'text-slate-600 dark:text-slate-300',
+    ring: 'ring-slate-400/20 dark:ring-slate-400/30',
+  },
+  rain: {
+    bg: 'bg-sky-500/15 dark:bg-sky-400/20',
+    text: 'text-sky-600 dark:text-sky-400',
+    ring: 'ring-sky-500/20 dark:ring-sky-400/30',
+  },
 }
 
 const REC_ICON: Record<RecommendationKind, LucideIcon> = {
@@ -147,12 +174,20 @@ export default function OverviewPage() {
                 </Card>
 
                 {/* weather */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{t('dash.overview.weatherTitle')}</CardTitle>
-                    <span className="text-xs text-ink/60">{farm ? g(farm.village) : ''}</span>
+                <Card className="flex flex-col">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle>{t('dash.overview.weatherTitle')}</CardTitle>
+                        <CardDescription>{farm ? g(farm.village) : ''}</CardDescription>
+                      </div>
+                      <Badge variant="outline" className="gap-1 font-normal text-xs text-ink/65">
+                        <MapPin className="size-3 text-brand" />
+                        {farm ? g(farm.village) : 'Gujarat'}
+                      </Badge>
+                    </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-1 pb-4">
                     <WeatherBlock weather={data.weather} />
                   </CardContent>
                 </Card>
@@ -282,51 +317,193 @@ export default function OverviewPage() {
 function WeatherBlock({ weather }: { weather: Weather }) {
   const { t } = useTranslation()
   const fmt = useFormatters()
+  const [view, setView] = useState<'list' | 'cards'>('list')
   const NowIcon = CONDITION_ICON[weather.now.condition]
+  const theme = CONDITION_THEME[weather.now.condition]
+
+  const weekMin = Math.min(...weather.days.map((d) => d.min))
+  const weekMax = Math.max(...weather.days.map((d) => d.max))
+  const tempRange = Math.max(1, weekMax - weekMin)
+
   return (
-    <div>
-      <div className="flex items-center gap-4">
-        <span className="grid size-14 place-items-center rounded-2xl bg-[#FFF6E0] text-[#E0A526]">
-          <NowIcon className="size-7" />
-        </span>
-        <div>
-          <p className="text-3xl font-semibold leading-none tracking-tight">{weather.now.temp}°</p>
-          <p className="mt-1 text-xs text-ink/60">{t(`dash.conditions.${weather.now.condition}`)}</p>
-        </div>
-        <div className="ml-auto space-y-1 text-right text-caption text-ink/60">
-          {weather.now.rainfall !== undefined && (
-            <p className="flex items-center justify-end gap-1">
-              <CloudRain className="size-3" />
-              {t('dash.overview.rainfall', { mm: weather.now.rainfall })}
+    <div className="space-y-4">
+      {/* Current weather hero */}
+      <div className="rounded-2xl border border-surface-line/70 bg-gradient-to-br from-surface to-surface-muted/40 p-3.5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className={cn('grid size-12 place-items-center rounded-2xl ring-1 shadow-xs', theme.bg, theme.ring)}>
+              <NowIcon className={cn('size-6.5', theme.text)} />
+            </span>
+            <div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold leading-none tracking-tight text-ink">
+                  {weather.now.temp}°
+                </span>
+                {weather.days[0] && (
+                  <span className="text-caption font-medium text-ink/50 tabular-nums">
+                    {weather.days[0].max}° / {weather.days[0].min}°
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-xs font-medium text-ink/75 capitalize">
+                {t(`dash.conditions.${weather.now.condition}`)}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-1 text-right text-caption text-ink/70">
+            {weather.now.rainfall !== undefined && (
+              <p className="flex items-center justify-end gap-1.5 tabular-nums">
+                <CloudRain className="size-3.5 text-sky-500" />
+                <span>{t('dash.overview.rainfall', { mm: weather.now.rainfall })}</span>
+              </p>
+            )}
+            <p className="flex items-center justify-end gap-1.5 tabular-nums">
+              <Droplets className="size-3.5 text-teal-500" />
+              <span>{t('dash.overview.humidity', { pct: weather.now.humidity })}</span>
             </p>
-          )}
-          <p className="flex items-center justify-end gap-1">
-            <Droplets className="size-3" />
-            {t('dash.overview.humidity', { pct: weather.now.humidity })}
-          </p>
-          <p className="flex items-center justify-end gap-1">
-            <Wind className="size-3" />
-            {t('dash.overview.wind', { kmh: weather.now.windKmh })}
-          </p>
+            <p className="flex items-center justify-end gap-1.5 tabular-nums">
+              <Wind className="size-3.5 text-slate-400" />
+              <span>{t('dash.overview.wind', { kmh: weather.now.windKmh })}</span>
+            </p>
+          </div>
         </div>
       </div>
-      <ul className="mt-5 flex gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-7 sm:overflow-visible sm:pb-0">
-        {weather.days.map((d) => {
-          const Icon = CONDITION_ICON[d.condition]
-          return (
-            <li key={d.date} className="min-w-[68px] flex-1 rounded-xl bg-surface px-1.5 py-2.5 text-center sm:min-w-0">
-              <p className="truncate text-caption font-semibold text-ink/60">{fmt.relativeDay(d.date)}</p>
-              <Icon className={cn('mx-auto my-1.5 size-5', d.condition === 'rain' ? 'text-sky-600' : 'text-ink/60')} />
-              <p className="text-xs font-semibold tabular-nums">
-                {d.max}° <span className="font-normal text-ink/60">{d.min}°</span>
-              </p>
-              <p className={cn('mt-0.5 text-2xs tabular-nums', d.rainChance >= 50 ? 'font-semibold text-sky-700' : 'text-ink/60')}>
-                {t('dash.overview.rain', { pct: d.rainChance })}
-              </p>
-            </li>
-          )
-        })}
-      </ul>
+
+      {/* Forecast header & view switch */}
+      <div>
+        <div className="mb-2 flex items-center justify-between px-0.5">
+          <div className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-ink/55">
+            <CalendarDays className="size-3 text-ink/45" />
+            <span>{t('dash.overview.forecast7d')}</span>
+          </div>
+          <div className="flex items-center gap-0.5 rounded-lg bg-surface-muted p-0.5">
+            <button
+              type="button"
+              onClick={() => setView('list')}
+              aria-label={t('dash.common.list')}
+              className={cn(
+                'flex items-center gap-1 rounded-md px-2 py-0.5 text-2xs font-medium transition-all',
+                view === 'list' ? 'bg-white font-semibold text-ink shadow-xs dark:bg-surface' : 'text-ink/60 hover:text-ink'
+              )}
+            >
+              <List className="size-3" />
+              <span>{t('dash.common.list')}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setView('cards')}
+              aria-label={t('dash.common.cards')}
+              className={cn(
+                'flex items-center gap-1 rounded-md px-2 py-0.5 text-2xs font-medium transition-all',
+                view === 'cards' ? 'bg-white font-semibold text-ink shadow-xs dark:bg-surface' : 'text-ink/60 hover:text-ink'
+              )}
+            >
+              <LayoutGrid className="size-3" />
+              <span>{t('dash.common.cards')}</span>
+            </button>
+          </div>
+        </div>
+
+        {view === 'list' ? (
+          /* Apple-weather style 7-day row list */
+          <div className="space-y-0.5 rounded-xl border border-surface-line/60 bg-surface/40 p-1.5">
+            {weather.days.map((d, i) => {
+              const Icon = CONDITION_ICON[d.condition]
+              const dTheme = CONDITION_THEME[d.condition]
+              const isToday = i === 0
+              const leftPct = ((d.min - weekMin) / tempRange) * 100
+              const widthPct = Math.max(12, ((d.max - d.min) / tempRange) * 100)
+
+              return (
+                <div
+                  key={d.date}
+                  className={cn(
+                    'flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs transition-colors',
+                    isToday ? 'bg-brand-soft/30 font-semibold' : 'hover:bg-surface-muted/60'
+                  )}
+                >
+                  {/* Day name - full width, never truncated! */}
+                  <span className={cn('w-20 shrink-0 text-caption font-medium', isToday ? 'font-bold text-brand' : 'text-ink/75')}>
+                    {fmt.relativeDay(d.date)}
+                  </span>
+
+                  {/* Icon */}
+                  <span className="flex w-6 shrink-0 justify-center">
+                    <Icon className={cn('size-4', dTheme.text)} />
+                  </span>
+
+                  {/* Rain chance */}
+                  <div className="w-12 shrink-0 text-center">
+                    {d.rainChance > 0 ? (
+                      <span className="inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-2xs font-semibold text-sky-700 bg-sky-50 dark:bg-sky-950/40">
+                        <Droplets className="size-2.5 shrink-0" />
+                        {d.rainChance}%
+                      </span>
+                    ) : (
+                      <span className="text-2xs text-ink/30">—</span>
+                    )}
+                  </div>
+
+                  {/* Temperature bar */}
+                  <div className="ml-auto flex items-center gap-2 shrink-0">
+                    <span className="w-6 text-right text-caption tabular-nums text-ink/50">{d.min}°</span>
+                    <div className="relative h-1.5 w-16 sm:w-20 rounded-full bg-surface-muted overflow-hidden">
+                      <div
+                        className="absolute top-0 bottom-0 rounded-full bg-gradient-to-r from-teal-400 via-amber-400 to-rose-400"
+                        style={{
+                          left: `${leftPct}%`,
+                          width: `${Math.min(100 - leftPct, widthPct)}%`,
+                        }}
+                      />
+                    </div>
+                    <span className="w-6 text-left text-caption font-semibold tabular-nums text-ink">{d.max}°</span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          /* Spacious horizontal cards with comfortable width */
+          <div className="flex gap-2.5 overflow-x-auto pb-1.5 pt-0.5 no-scrollbar snap-x snap-mandatory">
+            {weather.days.map((d) => {
+              const Icon = CONDITION_ICON[d.condition]
+              const dTheme = CONDITION_THEME[d.condition]
+              const isToday = d.date === weather.days[0]?.date
+
+              return (
+                <div
+                  key={d.date}
+                  className={cn(
+                    'min-w-[92px] flex-1 snap-start rounded-xl border border-surface-line bg-surface p-2.5 text-center transition-all hover:border-ink/20 hover:shadow-xs',
+                    isToday && 'border-brand/40 bg-brand-soft/25'
+                  )}
+                >
+                  <p className={cn('text-caption font-semibold', isToday ? 'text-brand font-bold' : 'text-ink/75')}>
+                    {fmt.relativeDay(d.date)}
+                  </p>
+                  <span className={cn('mx-auto my-1.5 grid size-7 place-items-center rounded-lg', dTheme.bg)}>
+                    <Icon className={cn('size-4', dTheme.text)} />
+                  </span>
+                  <p className="text-xs font-bold tabular-nums text-ink">
+                    {d.max}° <span className="font-normal text-ink/50 text-caption">{d.min}°</span>
+                  </p>
+                  <div className="mt-1">
+                    {d.rainChance > 0 ? (
+                      <span className="inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-2xs font-semibold text-sky-700 bg-sky-50 dark:bg-sky-950/40">
+                        <Droplets className="size-2.5" />
+                        {d.rainChance}%
+                      </span>
+                    ) : (
+                      <span className="text-2xs text-ink/30">0%</span>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

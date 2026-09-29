@@ -72,6 +72,8 @@
     "listen": "Listen",
     "listenIn": "Listen in {{lang}}",
     "open": "Open",
+    "list": "List",
+    "cards": "Cards",
     "on": "ON",
     "off": "OFF",
     "status": {
@@ -112,6 +114,7 @@
     "alertsTitle": "Latest alerts",
     "alertsEmpty": "No alerts in the last 24 hours.",
     "weatherTitle": "Weather",
+    "forecast7d": "7-Day Forecast",
     "rainfall": "Rain {{mm}} mm",
     "rain": "Rain {{pct}}%",
     "wind": "Wind {{kmh}} km/h",
