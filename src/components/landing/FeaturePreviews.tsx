@@ -318,7 +318,7 @@ function AlertsPreview({ data }: PreviewProps) {
         </span>
         <span className="flex-1">
           <span className="block text-3xs uppercase tracking-wider text-white/50">{t('features.preview.incomingCall')}</span>
-          AgriSaarthi
+          KhetMitra
         </span>
         <span className="grid size-6 place-items-center rounded-full bg-lime text-ink">
           <Phone className="size-3" />

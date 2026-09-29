@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority'
 
 /**
- * shadcn/ui Button, restyled for AgriSaarthi.
+ * shadcn/ui Button, restyled for KhetMitra.
  * The "chamfer" shape (one clipped corner) comes from the reference "Book a Demo ›" button.
  */
 export const buttonVariants = cva(

@@ -1,4 +1,4 @@
-# AgriSaarthi — Project Context (read this first)
+# KhetMitra — Project Context (read this first)
 
 SIH 2026 project: solar-powered AI + IoT smart farming station with web dashboard.
 Current phase: SOFTWARE ONLY. No hardware. All sensor, wildlife, mesh and pump data is simulated.

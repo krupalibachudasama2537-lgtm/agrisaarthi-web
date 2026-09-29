@@ -10,7 +10,7 @@
     "menu": "Menu",
     "close": "Close",
     "language": "Language",
-    "home": "AgriSaarthi home",
+    "home": "KhetMitra home",
     "main": "Main navigation",
     "skip": "Skip to main content"
   },
@@ -30,7 +30,7 @@
     "eyebrow": "Solar-powered AI + IoT station",
     "title1": "From Guesswork",
     "title2": "to Precision Farming",
-    "sub": "AgriSaarthi watches your soil, crops and fence line day and night, then tells you exactly what to do: on the dashboard, by SMS, by phone call, in Gujarati or Hindi.",
+    "sub": "KhetMitra watches your soil, crops and fence line day and night, then tells you exactly what to do: on the dashboard, by SMS, by phone call, in Gujarati or Hindi.",
     "ctaPrimary": "Book a demo",
     "ctaSecondary": "See how it works",
     "soilScore": "Soil Health Score",
@@ -51,9 +51,9 @@
     "tagAnimal": "Nilgai"
   },
   "about": {
-    "eyebrow": "About AgriSaarthi",
+    "eyebrow": "About KhetMitra",
     "title": "We combine IoT sensors, AI vision and solar power",
-    "body": "Farmers still decide on water, fertilizer and sprays by guesswork, and they often find out about disease, pests or animals too late. AgriSaarthi puts a lab, an agronomist and a watchman on one solar pole, and it works offline.",
+    "body": "Farmers still decide on water, fertilizer and sprays by guesswork, and they often find out about disease, pests or animals too late. KhetMitra puts a lab, an agronomist and a watchman on one solar pole, and it works offline.",
     "insetLabel": "Soil moisture · Zone 3",
     "delivers": "What the station delivers",
     "stats": {
@@ -140,7 +140,7 @@
   "econ": {
     "eyebrow": "Impact",
     "title": "Better economics, less chemistry",
-    "body": "Blanket watering and spraying waste money and harm the soil. AgriSaarthi applies inputs only where and when the field needs them.",
+    "body": "Blanket watering and spraying waste money and harm the soil. KhetMitra applies inputs only where and when the field needs them.",
     "points": {
       "one": "Fertilizer in bags per acre with estimated ₹ cost, before you buy",
       "two": "Irrigation timed to moisture, weather and crop stage",
@@ -238,7 +238,7 @@
       "minAgo": "{{count}} min ago",
       "treatment": "Mancozeb 75% WP · 2.5 g/L, repeat after 10 days",
       "pestDose": "Pheromone traps 5/acre + Emamectin 5% SG 0.4 g/L",
-      "sms": "AgriSaarthi: Soil too dry (22%). Pump started for 35 min.",
+      "sms": "KhetMitra: Soil too dry (22%). Pump started for 35 min.",
       "tip": "Add 2 t/acre farmyard manure to lower pH",
       "stage": "Flowering",
       "soilType": "Medium black"
@@ -286,7 +286,7 @@
         "body": "Switches the pump ON/OFF automatically."
       }
     },
-    "alt": "AgriSaarthi solar station: solar panel, weather shield, siren, IR camera, PIR sensor, controller box with display, soil probes and water pump"
+    "alt": "KhetMitra solar station: solar panel, weather shield, siren, IR camera, PIR sensor, controller box with display, soil probes and water pump"
   },
   "team": {
     "eyebrow": "Team",
@@ -343,7 +343,7 @@
   },
   "cta": {
     "eyebrow": "Get started",
-    "title": "See AgriSaarthi on your own field",
+    "title": "See KhetMitra on your own field",
     "body": "We'll bring the station to your farm, test your soil and show the dashboard, SMS and voice alerts live.",
     "name": "Your name",
     "phone": "Mobile number",
@@ -359,7 +359,7 @@
     "product": "Product",
     "project": "Project",
     "sih": "Smart India Hackathon 2026",
-    "rights": "© 2026 AgriSaarthi. Student project for SIH 2026.",
+    "rights": "© 2026 KhetMitra. Student project for SIH 2026.",
     "imagery": "Photos: Unsplash (placeholders)."
   },
   "glossary": {

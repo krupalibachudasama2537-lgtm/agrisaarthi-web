@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-/** AgriSaarthi mark: sprout over a sun arc, plus wordmark */
+/** KhetMitra mark: sprout over a sun arc, plus wordmark */
 export function Logo({ className, tone = 'dark' }: { className?: string; tone?: 'dark' | 'light' }) {
   return (
     <span className={cn('inline-flex items-center gap-2.5', className)}>
@@ -17,7 +17,7 @@ export function Logo({ className, tone = 'dark' }: { className?: string; tone?: 
           tone === 'dark' ? 'text-ink' : 'text-white',
         )}
       >
-        Agri<span className={tone === 'dark' ? 'text-olive' : 'text-lime'}>Saarthi</span>
+        Khet<span className={tone === 'dark' ? 'text-olive' : 'text-lime'}>Mitra</span>
       </span>
     </span>
   )

@@ -84,7 +84,7 @@ export const MOCK_STATION: StationSnapshot = {
     {
       id: 'a1',
       channel: 'sms',
-      text: 'AgriSaarthi: Soil too dry (22%). Pump started for 35 min.',
+      text: 'KhetMitra: Soil too dry (22%). Pump started for 35 min.',
       time: '06:12',
       severity: 'warning',
     },

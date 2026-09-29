@@ -2,7 +2,7 @@ import type { Config } from 'tailwindcss'
 import animate from 'tailwindcss-animate'
 
 /**
- * AgriSaarthi design tokens.
+ * KhetMitra design tokens.
  * Palette follows the ./reference Dribbble shots: sage page, olive actions,
  * near-black "soil" sections, misty light stages and a small lime accent.
  */
