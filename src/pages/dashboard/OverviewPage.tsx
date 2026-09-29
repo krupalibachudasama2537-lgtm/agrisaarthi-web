@@ -21,13 +21,11 @@ import {
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { TimeSeriesChart } from '@/components/dashboard/charts'
 import { KpiCard } from '@/components/dashboard/KpiCard'
 import { PumpSwitch } from '@/components/dashboard/PumpSwitch'
 import { AsyncView, EmptyState, PageHeader, PageSkeleton, StatusBadge, StatusDot } from '@/components/dashboard/states'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { SegmentedControl } from '@/components/ui/segmented-control'
 import type { RecommendationKind, Weather, WeatherCondition } from '@/data/types'
 import { useApi } from '@/hooks/useApi'
 import { useDashboard } from '@/hooks/useDashboard'
@@ -37,7 +35,6 @@ import { ListenButton } from '@/components/dashboard/ListenButton'
 import { api } from '@/lib/api'
 import { simulator } from '@/lib/simulator'
 import { translateParams } from '@/lib/glossary'
-import { COLORS } from '@/lib/status'
 import { cn } from '@/lib/utils'
 
 const CONDITION_ICON: Record<WeatherCondition, LucideIcon> = {
@@ -80,14 +77,6 @@ const REC_ICON: Record<RecommendationKind, LucideIcon> = {
   soil: Droplets,
 }
 
-type ChartMetric = 'moisture' | 'temperature' | 'humidity'
-
-const CHART_CONFIG: Record<ChartMetric, { color: string; unit: string; threshold?: number }> = {
-  moisture: { color: COLORS.brand, unit: '%', threshold: 25 },
-  temperature: { color: COLORS.sun, unit: '°C' },
-  humidity: { color: COLORS.sky, unit: '%' },
-}
-
 export default function OverviewPage() {
   const { t } = useTranslation()
   const { g, gp } = useGlossary()
@@ -95,7 +84,6 @@ export default function OverviewPage() {
   const fmt = useFormatters()
   const query = useApi(() => api.getOverview(farmId), [farmId])
   const { mutate } = query
-  const [metric, setMetric] = useState<ChartMetric>('moisture')
 
   useEffect(() => {
     return simulator.subscribe(() => {
@@ -128,7 +116,6 @@ export default function OverviewPage() {
 
       <AsyncView query={query} skeleton={<PageSkeleton kpis={6} />}>
         {(data) => {
-          const cfg = CHART_CONFIG[metric]
           return (
             <div className="space-y-4">
               {/* KPIs */}
@@ -142,56 +129,24 @@ export default function OverviewPage() {
                 ))}
               </div>
 
-              <div className="grid gap-4 lg:grid-cols-3">
-                {/* 24h chart */}
-                <Card className="lg:col-span-2">
-                  <CardHeader className="flex-col sm:flex-row">
+              {/* weather */}
+              <Card className="flex flex-col lg:max-w-xl">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle>{t('dash.overview.chartTitle')}</CardTitle>
-                      <CardDescription>{t('dash.overview.chartDesc')}</CardDescription>
+                      <CardTitle>{t('dash.overview.weatherTitle')}</CardTitle>
+                      <CardDescription>{farm ? g(farm.village) : ''}</CardDescription>
                     </div>
-                    <SegmentedControl
-                      label={t('dash.overview.chartTitle')}
-                      value={metric}
-                      onValueChange={setMetric}
-                      options={(Object.keys(CHART_CONFIG) as ChartMetric[]).map((m) => ({ value: m, label: t(`dash.metrics.${m}`) }))}
-                    />
-                  </CardHeader>
-                  <CardContent>
-                    {data.series24h.length ? (
-                      <TimeSeriesChart
-                        data={data.series24h}
-                        xKey="t"
-                        xFormatter={fmt.time}
-                        series={[{ key: metric, name: t(`dash.metrics.${metric}`), color: cfg.color, unit: cfg.unit, area: true }]}
-                        references={cfg.threshold ? [{ y: cfg.threshold, label: t('dash.soil.dryTitle') }] : []}
-                        height={260}
-                      />
-                    ) : (
-                      <EmptyState body={t('dash.overview.chartEmpty')} />
-                    )}
-                  </CardContent>
-                </Card>
-
-                {/* weather */}
-                <Card className="flex flex-col">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle>{t('dash.overview.weatherTitle')}</CardTitle>
-                        <CardDescription>{farm ? g(farm.village) : ''}</CardDescription>
-                      </div>
-                      <Badge variant="outline" className="gap-1 font-normal text-xs text-ink/65">
-                        <MapPin className="size-3 text-brand" />
-                        {farm ? g(farm.village) : 'Gujarat'}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-1 pb-4">
-                    <WeatherBlock weather={data.weather} />
-                  </CardContent>
-                </Card>
-              </div>
+                    <Badge variant="outline" className="gap-1 font-normal text-xs text-ink/65">
+                      <MapPin className="size-3 text-brand" />
+                      {farm ? g(farm.village) : 'Gujarat'}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-1 pb-4">
+                  <WeatherBlock weather={data.weather} />
+                </CardContent>
+              </Card>
 
               <div className="grid gap-4 lg:grid-cols-3">
                 {/* recommendations */}
