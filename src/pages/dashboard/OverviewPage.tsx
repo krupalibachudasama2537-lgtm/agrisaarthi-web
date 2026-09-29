@@ -419,7 +419,7 @@ function WeatherBlock({ weather }: { weather: Weather }) {
                 <div
                   key={d.date}
                   className={cn(
-                    'flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs transition-colors',
+                    'flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs transition-colors',
                     isToday ? 'bg-brand-soft/30 font-semibold' : 'hover:bg-surface-muted/60'
                   )}
                 >
@@ -434,7 +434,7 @@ function WeatherBlock({ weather }: { weather: Weather }) {
                   </span>
 
                   {/* Rain chance */}
-                  <div className="w-12 shrink-0 text-center">
+                  <div className="w-11 shrink-0 text-center">
                     {d.rainChance > 0 ? (
                       <span className="inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-2xs font-semibold text-sky-700 bg-sky-50 dark:bg-sky-950/40">
                         <Droplets className="size-2.5 shrink-0" />
@@ -445,10 +445,10 @@ function WeatherBlock({ weather }: { weather: Weather }) {
                     )}
                   </div>
 
-                  {/* Temperature bar */}
-                  <div className="ml-auto flex items-center gap-2 shrink-0">
-                    <span className="w-6 text-right text-caption tabular-nums text-ink/50">{d.min}°</span>
-                    <div className="relative h-1.5 w-16 sm:w-20 rounded-full bg-surface-muted overflow-hidden">
+                  {/* Temperature bar - only the bar itself shrinks, min/max labels never clip */}
+                  <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-1.5">
+                    <span className="w-6 shrink-0 text-right text-caption tabular-nums text-ink/50">{d.min}°</span>
+                    <div className="relative h-1.5 w-full min-w-[28px] max-w-20 rounded-full bg-surface-muted overflow-hidden">
                       <div
                         className="absolute top-0 bottom-0 rounded-full bg-gradient-to-r from-teal-400 via-amber-400 to-rose-400"
                         style={{
@@ -457,7 +457,7 @@ function WeatherBlock({ weather }: { weather: Weather }) {
                         }}
                       />
                     </div>
-                    <span className="w-6 text-left text-caption font-semibold tabular-nums text-ink">{d.max}°</span>
+                    <span className="w-6 shrink-0 text-left text-caption font-semibold tabular-nums text-ink">{d.max}°</span>
                   </div>
                 </div>
               )

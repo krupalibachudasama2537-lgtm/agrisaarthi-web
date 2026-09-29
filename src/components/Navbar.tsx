@@ -11,7 +11,6 @@ import { Logo } from './Logo'
 import { EASE_CALM } from '@/lib/motion'
 
 const LINKS = [
-  { id: 'features', key: 'nav.features' },
   { id: 'how-it-works', key: 'nav.how' },
   { id: 'hardware', key: 'nav.hardware' },
   { id: 'faq', key: 'nav.faq' },

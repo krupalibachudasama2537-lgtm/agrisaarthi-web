@@ -5,7 +5,6 @@ import { AboutDark } from '@/components/landing/AboutDark'
 import { Cta } from '@/components/landing/Cta'
 import { DetectionToAction } from '@/components/landing/DetectionToAction'
 import { Faq } from '@/components/landing/Faq'
-import { Features } from '@/components/landing/Features'
 import { Footer } from '@/components/landing/Footer'
 import { Hardware } from '@/components/landing/Hardware'
 import { Hero } from '@/components/landing/Hero'
@@ -30,7 +29,6 @@ export default function LandingPage() {
         <Hardware />
         <HowItWorks />
         <DetectionToAction />
-        <Features />
         <Faq />
         <Cta />
       </main>

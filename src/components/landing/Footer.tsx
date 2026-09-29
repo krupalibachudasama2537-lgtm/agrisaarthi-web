@@ -7,7 +7,6 @@ import { BADGES } from '@/data/landing'
 import { scrollToId } from '@/lib/lenis'
 
 const PRODUCT_LINKS = [
-  { id: 'features', key: 'nav.features' },
   { id: 'how-it-works', key: 'nav.how' },
   { id: 'hardware', key: 'nav.hardware' },
   { id: 'faq', key: 'nav.faq' },
